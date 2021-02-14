@@ -104,8 +104,26 @@ const player1 = {
             }
         }
     },
-    sell() {
-
+    sell(goodId) {
+        let nearStore = this.exEnv().type === 'store';
+        //console.log(nearStore)
+        let currentGold = this.gold;
+        if(nearStore) {
+            let store = this.exEnv();
+            let invItem = this.inventory.find(item => {
+                return item.itemId === goodId;
+            })
+            //console.log("inv: ", invItem)
+            if(invItem) {
+                let index = this.inventory.findIndex(item => {
+                    return item.itemId === goodId;
+                })
+                //console.log(index)
+                this.inventory.splice(index, 1)
+                let storeItemPrice = invItem.basePrice;
+                this.gold += storeItemPrice;
+            }
+        }
     },
     exEnv() {
         let cords = this.currentPosition;
@@ -118,6 +136,8 @@ const player1 = {
             locationItem = currentMap.locations.filter(item => {
                 return item.cords[0] === cords[0] && item.cords[1] === cords[1];
             })
+            console.log('examine: there is a '+locationItem[0].name+' cords: '+locationItem[0].cords)
+            console.log(locationItem)
             return locationItem[0];
         }
         //console.log(hasLocation)
@@ -131,14 +151,3 @@ const player1 = {
 
 
 
-function testBuy() {
-    let firstStoreCords = map1.locations[0].cords;
-    console.log(firstStoreCords)
-    player1.travel(firstStoreCords[0], firstStoreCords[1]);
-    player1.buy(10)
-    console.log(player1)
-}
-testBuy()
-testBuy()
-testBuy()
-testBuy()
